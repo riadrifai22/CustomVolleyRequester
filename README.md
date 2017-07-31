@@ -113,6 +113,10 @@ simpleRequestFields.setPriority(NetworkPriorityTypes.IMMEDIATE);
   RequestGenerator.getInstance().getRequesterInitiator().cancelRequest(requestId); //requestId is saved from onRequestAddedToQueue method
 ```
 
+## Authors:
+* [Riad Rifai](https://github.com/riadrifai22)
+* [Mohammad Zein El Deen](https://github.com/mmz33)
+* [Jad Kik](https://github.com/jadkik)
 
 ## Suggestions:
 
