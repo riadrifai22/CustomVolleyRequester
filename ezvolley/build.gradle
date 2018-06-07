@@ -1,0 +1,53 @@
+apply plugin: 'com.android.library'
+
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'ezvolley-volley-requester'
+
+    publishedGroupId = 'com.ezvolley.requester'
+    libraryName = 'EzVolley'
+    artifact = 'ezvolley'
+
+    libraryDescription = 'A library that makes android HTTP requests easier and requires no boiler plate code; based on Google\'s Volley library.'
+
+    siteUrl = 'https://github.com/riadrifai22/EzVolley'
+    gitUrl = 'https://github.com/riadrifai22/EzVolley.git'
+
+    libraryVersion = '2.0.0'
+
+    developerId = 'riadrifai22'
+    developerName = 'Riad Rifai'
+    developerEmail = 'riadrifai22@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+tasks.withType(Javadoc) {
+    options.addStringOption('Xdoclint:none', '-quiet')
+    options.addStringOption('encoding', 'UTF-8')
+    options.addStringOption('charSet', 'UTF-8')
+}
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    //compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'com.android.volley:volley:1.0.0'
+    compile 'com.google.code.gson:gson:2.8.2'
+    compile 'com.android.support:appcompat-v7:25.4.0'
+}
+
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'

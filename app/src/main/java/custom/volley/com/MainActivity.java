@@ -2,15 +2,15 @@ package custom.volley.com;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
-import com.custom.volley.requester.RequestGenerator;
-import com.custom.volley.requester.error.NetworkConnectionResponseError;
-import com.custom.volley.requester.fields.SimpleRequestFields;
-import com.custom.volley.requester.headers.RequestHeadersGenerator;
-import com.custom.volley.requester.response.NetworkResponseHandler;
-import com.custom.volley.requester.types.NetworkMethodTypes;
-import com.google.gson.JsonObject;
+import com.ezvolley.RequestGenerator;
+import com.ezvolley.fields.EzGetFields;
+import com.ezvolley.fields.EzPostFields;
+import com.ezvolley.headers.RequestHeadersGenerator;
+import com.ezvolley.response.NetworkResponseHandler;
+import com.google.gson.Gson;
 
 import java.util.Map;
 
@@ -21,62 +21,55 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        String url = "YOUR_URL";
+        //GET REQUEST EXAMPLE
+        String url = "https://jsonplaceholder.typicode.com/posts/1";
 
-        /**
-         * Simplest way to make a request.
-         */
-        SimpleRequestFields<Model> simpleRequestFields = new SimpleRequestFields<>(NetworkMethodTypes.GET, url,
-                null, null, Model.class, "DEBUG");
-
-        RequestGenerator.getInstance().getRequesterInitiator().createRequest(simpleRequestFields,
-                new NetworkResponseHandler<Model>() {
+        EzGetFields<Model> ezGetFields = new EzGetFields<>(url, Model.class);
+        RequestGenerator.getInstance().getRequesterInitiator().createRequest(ezGetFields, new NetworkResponseHandler<Model>() {
             @Override
             public void onSuccess(Model result) {
-                Toast.makeText(MainActivity.this, result.getResult(), Toast.LENGTH_LONG).show();
+//                Log.d("MainActivity", "onSuccess: " + result.body);
+                Toast.makeText(MainActivity.this, result.body, Toast.LENGTH_LONG).show();
             }
 
             @Override
-            public void onRequestAddedToQueue(int requestId) {
-                super.onRequestAddedToQueue(requestId);
-
-            }
-
-            @Override
-            public void onConnectionFailed(NetworkConnectionResponseError connectionError) {
-                super.onConnectionFailed(connectionError);
+            public void onResponseHeadersAvailable(Map<String, String> headers) {
+                super.onResponseHeadersAvailable(headers);
+                //optional to override, these headers are returned by the response
             }
         });
 
 
+        Gson gson = new Gson();
 
-        /**
-         * In case you'd like to add headers or send a body with the request
-         */
+        //POST REQUEST EXAMPLE
+        Model model = new Model();
+        model.body = "This is body";
+        model.userId = 1996;
+        model.title = "EzVolley";
 
-        String jsonObjectToSend = "{email:test@test.com}";
         Map<String, String> headers = new RequestHeadersGenerator.Builder()
-                .addAcceptJson()
-                .addHeaders(null)
-                .build().getHeaders();
+                .addSendJson()
+                .build()
+                .getHeaders();
 
-        SimpleRequestFields<JsonObject> heavyRequest = new SimpleRequestFields<>(
-                NetworkMethodTypes.GET, url, jsonObjectToSend, headers, JsonObject.class, "DEBUG");
+        String postUrl = "https://jsonplaceholder.typicode.com/posts";
 
-        RequestGenerator.getInstance().getRequesterInitiator().createRequest(heavyRequest,
-                new NetworkResponseHandler<JsonObject>() {
+        EzPostFields <Model> ezPostFields = new EzPostFields<>(postUrl, gson.toJson(model), headers, Model.class);
+        RequestGenerator.getInstance().getRequesterInitiator().createRequest(ezPostFields, new NetworkResponseHandler<Model>() {
             @Override
-            public void onSuccess(JsonObject result) {
-                //JsonObject returned from server
+            public void onSuccess(Model result) {
+                //posted the model successfully.
+                Toast.makeText(MainActivity.this, result.body, Toast.LENGTH_LONG).show();
+//                Log.d("MainActivity", "onSuccess: " + result.body);
             }
         });
     }
 
     public class Model {
-        String origin;
-
-        public String getResult() {
-            return origin;
-        }
+        int userId;
+        int id;
+        String title;
+        String body;
     }
 }
