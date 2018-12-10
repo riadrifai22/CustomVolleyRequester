@@ -4,8 +4,6 @@
     android:versionCode="2"
     android:versionName="2.0">
 
-    <uses-sdk android:minSdkVersion="10"/>
-
     <application/>
 
 </manifest>
